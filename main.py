@@ -17,10 +17,6 @@ async def test(ctx,*args):
     await ctx.send(f'Test command received: {response}')
 
 @bot.command()
-async def saludo(ctx):
-    await ctx.send("¡Hola, Orly!")
-
-@bot.command()
 async def poke(ctx, arg):
     try:
         pokemon = arg.split(" ", 1)[0]
