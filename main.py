@@ -26,7 +26,7 @@ async def poke(ctx, arg):
         else:
             iamge_url = result.json()['sprites']['front_default']
             print(iamge_url)
-            await ctx.send(f'Poke command received for: {pokemon}\nImage URL: {iamge_url}')
+            await ctx.send(f'Poke command received for: {pokemon})
        
     except Exception as e:
         print(f'Error in poke command: {e}')
@@ -44,7 +44,7 @@ async def on_ready():
     
 @bot.command()
 async def clean(ctx):
-    await ctx.channel.purge(limit=100)
+    await ctx.channel.purge(limit=1000)
     await ctx.send('Mensanges deleted successfully.', delete_after=3)
 
 webserver.keep_alive()
