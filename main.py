@@ -1,8 +1,9 @@
 import discord
 from discord.ext import commands
+from discord import app_commands
 import requests
 import os
-import webserver
+import webserver  # Esto asume que tienes este archivo en tu proyecto
 
 Discord_Token = os.getenv('Discord_Token')
 
@@ -10,15 +11,16 @@ intents = discord.Intents.default()
 intents.message_content = True
 
 bot = commands.Bot(command_prefix='.', intents=intents)
-tree = bot.tree  # Usa el mismo cliente para comandos de aplicación
+tree = bot.tree
 
 @bot.event
 async def on_ready():
-    await tree.sync()
+    await tree.sync(guild=discord.Object(id=873266970764669009))  # Reemplaza con tu ID
     print(f'Bot conectado como {bot.user}')
 
 # 👇 Slash command: /test
 @tree.command(name="test", description="Recibe un mensaje de prueba")
+@app_commands.describe(mensaje="Escribe el mensaje de prueba")
 async def slash_test(interaction: discord.Interaction, mensaje: str):
     await interaction.response.send_message(f'Test command received: {mensaje}')
 
@@ -30,11 +32,12 @@ async def test(ctx, *args):
 
 # 👇 Slash command: /poke
 @tree.command(name="poke", description="Busca un Pokémon y muestra su imagen")
+@app_commands.describe(nombre="Nombre del Pokémon a buscar")
 async def slash_poke(interaction: discord.Interaction, nombre: str):
     try:
         result = requests.get(f'https://pokeapi.co/api/v2/pokemon/{nombre.lower()}')
         if result.status_code == 404:
-            await interaction.response.send_message(f'Pokémon "{nombre}" no encontrado.')
+            await interaction.response.send_message(f'Pokémon \"{nombre}\" no encontrado.')
         else:
             image_url = result.json()['sprites']['front_default']
             await interaction.response.send_message(f'Imagen de {nombre}: {image_url}')
@@ -48,8 +51,8 @@ async def poke(ctx, arg):
     try:
         pokemon = arg.split(" ", 1)[0]
         result = requests.get(f'https://pokeapi.co/api/v2/pokemon/{pokemon.lower()}')
-        if result.text == 'Not Found':
-            await ctx.send(f'Pokemon "{pokemon}" no encontrado.')
+        if result.status_code == 404:
+            await ctx.send(f'Pokémon \"{pokemon}\" no encontrado.')
         else:
             image_url = result.json()['sprites']['front_default']
             await ctx.send(f'Poke recibido: {pokemon}\nImagen: {image_url}')
