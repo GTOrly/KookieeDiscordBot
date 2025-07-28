@@ -24,8 +24,6 @@ async def poke(ctx, arg):
         if result.text == 'Not Found':
             await ctx.send(f'Pokemon "{pokemon}" not found.')
         else:
-            iamge_url = result.json()['sprites']['front_default']
-            print(iamge_url)
             await ctx.send(f'Poke command received for: {pokemon})
        
     except Exception as e:
