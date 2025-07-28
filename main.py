@@ -163,51 +163,19 @@ async def slash_clean(interaction: discord.Interaction, cantidad: int = 100):
         )
         await interaction.followup.send(embed=embed_error)
 
-class EmbedModal(discord.ui.Modal, title="Crear un Embed Personalizado"):
-    titulo = discord.ui.TextInput(
-        label="Título del embed",
-        placeholder="Escribe el título aquí...",
-        max_length=256
-    )
-    descripcion = discord.ui.TextInput(
-        label="Descripción",
-        style=discord.TextStyle.paragraph,
-        placeholder="Puedes usar saltos de línea libremente",
-        max_length=2000,
-        required=True
-    )
-    imagen_url = discord.ui.TextInput(
-        label="URL de imagen (opcional)",
-        placeholder="https://i.imgur.com/ejemplo.png",
-        required=False
-    )
-
-    def __init__(self, interaction: discord.Interaction, color=discord.Color.blurple()):
-        super().__init__()
-        self.interaction = interaction
-        self.color = color
-
-    async def on_submit(self, interaction: discord.Interaction):
-        embed = discord.Embed(
-            title=self.titulo.value,
-            description=self.descripcion.value,
-            color=self.color
+@bot.tree.command(name="embed", description="Abre un formulario para crear un embed con estilo")
+async def slash_embed(interaction: discord.Interaction):
+    if not interaction.user.guild_permissions.manage_messages:
+        embed_error = crear_embed_error(
+            titulo="🚫 Permisos insuficientes",
+            descripcion="Necesitas el permiso `Manage Messages` para usar este comando.",
+            usuario=interaction.user
         )
+        await interaction.response.send_message(embed=embed_error, ephemeral=True)
+        return
 
-        # Solo agregar imagen si se especifica
-        if self.imagen_url.value.strip():
-            embed.set_image(url=self.imagen_url.value.strip())
-
-        embed.set_footer(
-            text=f"Creado por {interaction.user.display_name}",
-            icon_url=interaction.user.avatar.url if interaction.user.avatar else discord.Embed.Empty
-        )
-
-        await interaction.response.send_message(embed=embed)
-
-        msg = await interaction.original_response()
-        await msg.add_reaction("👁️")
-        await msg.add_reaction("📥")
+    modal = EmbedModal(interaction)
+    await interaction.response.send_modal(modal)
 
 @bot.event
 async def on_ready():
