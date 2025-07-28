@@ -3,28 +3,27 @@ from discord.ext import commands
 import requests
 import os
 import webserver
+
 Discord_Token = os.getenv('Discord_Token')
 
-# Initialize the bot with the specified command prefix and intents
 intents = discord.Intents.default()
 intents.message_content = True
-
 bot = commands.Bot(command_prefix='.', intents=intents)
+
 
 @bot.command()
 async def test(ctx,*args):
     response = ' '.join(args)
     await ctx.send(f'Test command received: {response}')
 
-@bot.command()
-async def poke(ctx, arg):
+@bot.tree.command(name="poke", description="Busca información sobre un Pokémon")
+async def slash_poke(interaction: discord.Interaction, nombre: str):
     try:
-        pokemon = arg.split(" ", 1)[0]
-        url = f'https://pokeapi.co/api/v2/pokemon/{pokemon.lower()}'
+        url = f'https://pokeapi.co/api/v2/pokemon/{nombre.lower()}'
         result = requests.get(url)
 
         if result.status_code != 200:
-            await ctx.send(f'Pokémon "{pokemon}" no encontrado.')
+            await interaction.response.send_message(f'Pokémon "{nombre}" no encontrado.')
             return
 
         data = result.json()
@@ -32,11 +31,10 @@ async def poke(ctx, arg):
         types = [t['type']['name'].capitalize() for t in data['types']]
         abilities = [a['ability']['name'].capitalize() for a in data['abilities']]
         sprite_url = data['sprites']['front_default']
-        weight = data['weight'] / 10  # en kilogramos
-        height = data['height'] / 10  # en metros
-
-        # Extraer estadísticas base
+        weight = data['weight'] / 10
+        height = data['height'] / 10
         stats = {stat['stat']['name']: stat['base_stat'] for stat in data['stats']}
+
         atk = stats.get('attack', 'N/A')
         defn = stats.get('defense', 'N/A')
         speed = stats.get('speed', 'N/A')
@@ -50,12 +48,11 @@ async def poke(ctx, arg):
             f"🖼️ Imagen: {sprite_url}"
         )
 
-        await ctx.send(response)
+        await interaction.response.send_message(response)
 
     except Exception as e:
-        print(f'Error en el comando poke: {e}')
-        await ctx.send('Ocurrió un error al procesar tu solicitud.')
-
+        print(f'Error en slash_poke: {e}')
+        await interaction.response.send_message('Ocurrió un error al procesar tu solicitud.')
 
 @poke.error
 async def poke_error(ctx, error):
@@ -64,14 +61,15 @@ async def poke_error(ctx, error):
     elif isinstance(error, commands.CommandInvokeError):
         await ctx.send('An error occurred while processing your request. Please try again later.')
 
-@bot.event
-async def on_ready():
-    print(f'Logged in as {bot.user}')
-    
 @bot.command()
 async def clean(ctx):
     await ctx.channel.purge(limit=1000)
     await ctx.send('Mensanges deleted successfully.', delete_after=3)
+
+@bot.event
+async def on_ready():
+    print(f'Logged in as {bot.user}')
+    await bot.tree.sync()
 
 webserver.keep_alive()
 bot.run(Discord_Token)
