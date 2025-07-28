@@ -54,13 +54,6 @@ async def slash_poke(interaction: discord.Interaction, nombre: str):
         print(f'Error en slash_poke: {e}')
         await interaction.response.send_message('Ocurrió un error al procesar tu solicitud.')
 
-@poke.error
-async def poke_error(ctx, error):
-    if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send('Please provide a Pokemon name.')
-    elif isinstance(error, commands.CommandInvokeError):
-        await ctx.send('An error occurred while processing your request. Please try again later.')
-
 @bot.command()
 async def clean(ctx):
     await ctx.channel.purge(limit=1000)
