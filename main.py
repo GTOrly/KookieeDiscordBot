@@ -11,6 +11,42 @@ intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='.', intents=intents)
 
+class EmbedModal(discord.ui.Modal, title="Crear un Embed Personalizado"):
+    titulo = discord.ui.TextInput(
+        label="Título del embed",
+        placeholder="Escribe el título aquí...",
+        max_length=256
+    )
+    descripcion = discord.ui.TextInput(
+        label="Descripción",
+        style=discord.TextStyle.paragraph,
+        placeholder="Puedes usar saltos de línea libremente",
+        max_length=2000,
+        required=True
+    )
+
+    def __init__(self, interaction: discord.Interaction, color=discord.Color.blurple()):
+        super().__init__()
+        self.interaction = interaction
+        self.color = color
+
+    async def on_submit(self, interaction: discord.Interaction):
+        embed = discord.Embed(
+            title=self.titulo.value,
+            description=self.descripcion.value,
+            color=self.color
+        )
+        embed.set_footer(
+            text=f"Creado por {interaction.user.display_name}",
+            icon_url=interaction.user.avatar.url if interaction.user.avatar else discord.Embed.Empty
+        )
+
+        await interaction.response.send_message(embed=embed)
+
+        msg = await interaction.original_response()
+        await msg.add_reaction("👁️")
+        await msg.add_reaction("📥")
+
 def es_admin(interaction: discord.Interaction) -> bool:
     return interaction.user.guild_permissions.administrator
 
@@ -127,48 +163,51 @@ async def slash_clean(interaction: discord.Interaction, cantidad: int = 100):
         )
         await interaction.followup.send(embed=embed_error)
 
-@bot.tree.command(name="embed", description="Crea un embed con reacciones para seguimiento")
-async def slash_embed(
-    interaction: discord.Interaction,
-    titulo: str = commands.Param(description="Título del mensaje"),
-    descripcion: str = commands.Param(description="Contenido principal del mensaje"),
-    color_hex: str = commands.Param(default="#5865F2", description="Color del embed"),
-    privado: bool = commands.Param(default=False, description="Si el mensaje es solo para ti")
-):
-    if not interaction.user.guild_permissions.manage_messages:
-        embed_error = crear_embed_error(
-            titulo="🚫 Permisos insuficientes",
-            descripcion="Necesitas el permiso `Manage Messages` para usar este comando.",
-            usuario=interaction.user
+class EmbedModal(discord.ui.Modal, title="Crear un Embed Personalizado"):
+    titulo = discord.ui.TextInput(
+        label="Título del embed",
+        placeholder="Escribe el título aquí...",
+        max_length=256
+    )
+    descripcion = discord.ui.TextInput(
+        label="Descripción",
+        style=discord.TextStyle.paragraph,
+        placeholder="Puedes usar saltos de línea libremente",
+        max_length=2000,
+        required=True
+    )
+    imagen_url = discord.ui.TextInput(
+        label="URL de imagen (opcional)",
+        placeholder="https://i.imgur.com/ejemplo.png",
+        required=False
+    )
+
+    def __init__(self, interaction: discord.Interaction, color=discord.Color.blurple()):
+        super().__init__()
+        self.interaction = interaction
+        self.color = color
+
+    async def on_submit(self, interaction: discord.Interaction):
+        embed = discord.Embed(
+            title=self.titulo.value,
+            description=self.descripcion.value,
+            color=self.color
         )
-        await interaction.response.send_message(embed=embed_error, ephemeral=True)
-        return
 
-    try:
-        COLORES_NOMBRES = {
-            "red": 0xFF0000, "green": 0x00FF00, "blue": 0x0000FF,
-            "yellow": 0xFFFF00, "purple": 0x800080, "orange": 0xFFA500,
-            "grey": 0x808080, "white": 0xFFFFFF, "black": 0x000000
-        }
-        color_hex = color_hex.strip().lower()
-        color = discord.Color(COLORES_NOMBRES.get(color_hex, int(color_hex.strip("#"), 16)))
+        # Solo agregar imagen si se especifica
+        if self.imagen_url.value.strip():
+            embed.set_image(url=self.imagen_url.value.strip())
 
-        embed = discord.Embed(title=titulo, description=descripcion, color=color)
         embed.set_footer(
             text=f"Creado por {interaction.user.display_name}",
             icon_url=interaction.user.avatar.url if interaction.user.avatar else discord.Embed.Empty
         )
 
-        await interaction.response.send_message(embed=embed, ephemeral=privado)
+        await interaction.response.send_message(embed=embed)
 
-        if not privado:
-            msg = await interaction.original_response()
-            await msg.add_reaction("👁️")   # Leído
-            await msg.add_reaction("📥")   # No leído / pendiente
-
-    except Exception as e:
-        print(f"Error en slash_embed: {e}")
-        await interaction.response.send_message("❌ Error al crear el embed. Revisa el color o los argumentos.", ephemeral=True)6
+        msg = await interaction.original_response()
+        await msg.add_reaction("👁️")
+        await msg.add_reaction("📥")
 
 @bot.event
 async def on_ready():
