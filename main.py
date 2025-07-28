@@ -11,8 +11,20 @@ intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='.', intents=intents)
 
+def es_admin(interaction: discord.Interaction) -> bool:
+    return interaction.user.guild_permissions.administrator
+
 @bot.tree.command(name="active", description="Muestra el enlace para activar tu insignia de desarrollador")
 async def slash_active(interaction: discord.Interaction):
+    if not es_admin(interaction):
+        embed_error = crear_embed_error(
+            titulo="🚫 Solo administradores",
+            descripcion="No tienes permisos para usar este comando.",
+            usuario=interaction.user
+        )
+        await interaction.response.send_message(embed=embed_error, ephemeral=True)
+        return
+
     embed = crear_embed_info(
         titulo="🎓 ¡Activa tu insignia de desarrollador!",
         descripcion=(
@@ -123,10 +135,17 @@ async def slash_embed(
     color_hex: str = "#5865F2",
     privado: bool = False
 ):
-    try:
-        # Convertir el color hexadecimal a discord.Color
-        color = discord.Color(int(color_hex.strip("#"), 16))
+    if not interaction.user.guild_permissions.manage_messages:
+        embed_error = crear_embed_error(
+            titulo="🚫 Permisos insuficientes",
+            descripcion="Necesitas el permiso `Manage Messages` para usar este comando.",
+            usuario=interaction.user
+        )
+        await interaction.response.send_message(embed=embed_error, ephemeral=True)
+        return
 
+    try:
+        color = discord.Color(int(color_hex.strip("#"), 16))
         embed = discord.Embed(title=titulo, description=descripcion, color=color)
         embed.set_footer(
             text=f"Creado por {interaction.user.display_name}",
