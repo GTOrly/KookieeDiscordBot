@@ -75,6 +75,7 @@ async def slash_clean(interaction: discord.Interaction, cantidad: int = 100):
         return
 
     try:
+        await interaction.response.defer(ephemeral=False)
         await interaction.channel.purge(limit=cantidad)
 
         embed = discord.Embed(
@@ -87,11 +88,12 @@ async def slash_clean(interaction: discord.Interaction, cantidad: int = 100):
             icon_url=interaction.user.avatar.url if interaction.user.avatar else discord.Embed.Empty
         )
 
-        await interaction.response.send_message(embed=embed, delete_after=5)
+        await interaction.followup.send(embed=embed, delete_after=5)
 
     except Exception as e:
         print(f'Error en slash_clean: {e}')
-        await interaction.response.send_message("⚠️ Ocurrió un error al intentar limpiar los mensajes.")
+        await interaction.followup.send("⚠️ Ocurrió un error al intentar limpiar los mensajes.")
+
 
 @bot.event
 async def on_ready():
