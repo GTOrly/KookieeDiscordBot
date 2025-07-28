@@ -10,11 +10,22 @@ intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='.', intents=intents)
 
+@bot.tree.command(name="ping", description="Responde con Pong y muestra la latencia")
+async def slash_ping(interaction: discord.Interaction):
+    latency_ms = round(bot.latency * 1000)
 
-@bot.command()
-async def test(ctx,*args):
-    response = ' '.join(args)
-    await ctx.send(f'Test command received: {response}')
+    embed = discord.Embed(
+        title="🏓 Pong!",
+        description=f"Latencia actual: `{latency_ms} ms`",
+        color=discord.Color.blue()
+    )
+    embed.set_footer(
+        text=f"Solicitado por {interaction.user.display_name}",
+        icon_url=interaction.user.avatar.url if interaction.user.avatar else discord.Embed.Empty
+    )
+
+    await interaction.response.send_message(embed=embed)
+
 
 @bot.tree.command(name="poke", description="Busca información sobre un Pokémon")
 async def slash_poke(interaction: discord.Interaction, nombre: str):
@@ -23,7 +34,7 @@ async def slash_poke(interaction: discord.Interaction, nombre: str):
         result = requests.get(url)
 
         if result.status_code != 200:
-            await interaction.response.send_message(f'Pokémon "{nombre}" no encontrado.')
+            await interaction.response.send_message(f'Pokémon \"{nombre}\" no encontrado.', ephemeral=True)
             return
 
         data = result.json()
@@ -39,25 +50,48 @@ async def slash_poke(interaction: discord.Interaction, nombre: str):
         defn = stats.get('defense', 'N/A')
         speed = stats.get('speed', 'N/A')
 
-        response = (
-            f"**{name}**\n"
-            f"📏 Altura: {height} m | ⚖️ Peso: {weight} kg\n"
-            f"🔰 Tipo(s): {', '.join(types)}\n"
-            f"✨ Habilidades: {', '.join(abilities)}\n"
-            f"📊 Stats: Ataque {atk}, Defensa {defn}, Velocidad {speed}\n"
-            f"🖼️ Imagen: {sprite_url}"
+        embed = discord.Embed(
+            title=f"{name} 🐾",
+            description=f"Altura: `{height} m`  |  Peso: `{weight} kg`\nTipo(s): {', '.join(types)}",
+            color=discord.Color.random()
         )
+        embed.set_thumbnail(url=sprite_url)
+        embed.add_field(name="✨ Habilidades", value=', '.join(abilities), inline=False)
+        embed.add_field(name="📊 Stats", value=f"Ataque: `{atk}`\nDefensa: `{defn}`\nVelocidad: `{speed}`", inline=False)
 
-        await interaction.response.send_message(response)
+        await interaction.response.send_message(embed=embed)
 
     except Exception as e:
         print(f'Error en slash_poke: {e}')
         await interaction.response.send_message('Ocurrió un error al procesar tu solicitud.')
 
-@bot.command()
-async def clean(ctx):
-    await ctx.channel.purge(limit=1000)
-    await ctx.send('Mensanges deleted successfully.', delete_after=3)
+@bot.tree.command(name="clean", description="Elimina mensajes del canal")
+async def slash_clean(interaction: discord.Interaction, cantidad: int = 100):
+    if not interaction.user.guild_permissions.manage_messages:
+        await interaction.response.send_message(
+            "🚫 No tienes permisos para usar este comando.",
+            ephemeral=True
+        )
+        return
+
+    try:
+        await interaction.channel.purge(limit=cantidad)
+
+        embed = discord.Embed(
+            title="🧼 Limpieza completada",
+            description=f"Se eliminaron `{cantidad}` mensajes.",
+            color=discord.Color.green()
+        )
+        embed.set_footer(
+            text=f"Solicitado por {interaction.user.display_name}",
+            icon_url=interaction.user.avatar.url if interaction.user.avatar else discord.Embed.Empty
+        )
+
+        await interaction.response.send_message(embed=embed, delete_after=5)
+
+    except Exception as e:
+        print(f'Error en slash_clean: {e}')
+        await interaction.response.send_message("⚠️ Ocurrió un error al intentar limpiar los mensajes.")
 
 @bot.event
 async def on_ready():
