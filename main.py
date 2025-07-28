@@ -11,6 +11,19 @@ intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='.', intents=intents)
 
+@bot.tree.command(name="active", description="Muestra el enlace para activar tu insignia de desarrollador")
+async def slash_active(interaction: discord.Interaction):
+    embed = crear_embed_info(
+        titulo="🎓 ¡Activa tu insignia de desarrollador!",
+        descripcion=(
+            "Si ya has usado el Portal para desarrolladores de Discord y tienes una aplicación activa, "
+            "puedes activar tu insignia aquí:\n\n"
+            "[🔗 Enlace de activación](https://discord.com/developers/active-developer)"
+        ),
+        usuario=interaction.user
+    )
+    await interaction.response.send_message(embed=embed, ephemeral=True)
+
 @bot.tree.command(name="ping", description="Responde con Pong y muestra la latencia")
 async def slash_ping(interaction: discord.Interaction):
     latency_ms = round(bot.latency * 1000)
@@ -102,18 +115,29 @@ async def slash_clean(interaction: discord.Interaction, cantidad: int = 100):
         )
         await interaction.followup.send(embed=embed_error)
 
-@bot.tree.command(name="active", description="Muestra el enlace para activar tu insignia de desarrollador")
-async def slash_active(interaction: discord.Interaction):
-    embed = crear_embed_info(
-        titulo="🎓 ¡Activa tu insignia de desarrollador!",
-        descripcion=(
-            "Si ya has usado el Portal para desarrolladores de Discord y tienes una aplicación activa, "
-            "puedes activar tu insignia aquí:\n\n"
-            "[🔗 Enlace de activación](https://discord.com/developers/active-developer)"
-        ),
-        usuario=interaction.user
-    )
-    await interaction.response.send_message(embed=embed, ephemeral=True)
+@bot.tree.command(name="embed", description="Crea un embed personalizado para anuncios o mensajes visuales")
+async def slash_embed(
+    interaction: discord.Interaction,
+    titulo: str,
+    descripcion: str,
+    color_hex: str = "#5865F2",
+    privado: bool = False
+):
+    try:
+        # Convertir el color hexadecimal a discord.Color
+        color = discord.Color(int(color_hex.strip("#"), 16))
+
+        embed = discord.Embed(title=titulo, description=descripcion, color=color)
+        embed.set_footer(
+            text=f"Creado por {interaction.user.display_name}",
+            icon_url=interaction.user.avatar.url if interaction.user.avatar else discord.Embed.Empty
+        )
+
+        await interaction.response.send_message(embed=embed, ephemeral=privado)
+
+    except Exception as e:
+        print(f"Error en slash_embed: {e}")
+        await interaction.response.send_message("❌ Error al crear el embed. Revisa el color o los argumentos.", ephemeral=True)
 
 @bot.event
 async def on_ready():
