@@ -20,14 +20,42 @@ async def test(ctx,*args):
 async def poke(ctx, arg):
     try:
         pokemon = arg.split(" ", 1)[0]
-        result = requests.get(f'https://pokeapi.co/api/v2/pokemon/{pokemon.lower()}')
-        if result.text == 'Not Found':
-            await ctx.send(f'Pokemon "{pokemon}" not found.')
-        else:
-            await ctx.send(f'Poke command received for: {pokemon})
-       
+        url = f'https://pokeapi.co/api/v2/pokemon/{pokemon.lower()}'
+        result = requests.get(url)
+
+        if result.status_code != 200:
+            await ctx.send(f'Pokémon "{pokemon}" no encontrado.')
+            return
+
+        data = result.json()
+        name = data['name'].capitalize()
+        types = [t['type']['name'].capitalize() for t in data['types']]
+        abilities = [a['ability']['name'].capitalize() for a in data['abilities']]
+        sprite_url = data['sprites']['front_default']
+        weight = data['weight'] / 10  # en kilogramos
+        height = data['height'] / 10  # en metros
+
+        # Extraer estadísticas base
+        stats = {stat['stat']['name']: stat['base_stat'] for stat in data['stats']}
+        atk = stats.get('attack', 'N/A')
+        defn = stats.get('defense', 'N/A')
+        speed = stats.get('speed', 'N/A')
+
+        response = (
+            f"**{name}**\n"
+            f"📏 Altura: {height} m | ⚖️ Peso: {weight} kg\n"
+            f"🔰 Tipo(s): {', '.join(types)}\n"
+            f"✨ Habilidades: {', '.join(abilities)}\n"
+            f"📊 Stats: Ataque {atk}, Defensa {defn}, Velocidad {speed}\n"
+            f"🖼️ Imagen: {sprite_url}"
+        )
+
+        await ctx.send(response)
+
     except Exception as e:
-        print(f'Error in poke command: {e}')
+        print(f'Error en el comando poke: {e}')
+        await ctx.send('Ocurrió un error al procesar tu solicitud.')
+
 
 @poke.error
 async def poke_error(ctx, error):
