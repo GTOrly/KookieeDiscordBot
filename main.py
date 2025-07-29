@@ -1,55 +1,23 @@
+# ==== Imports ====
 import discord
 from discord.ext import commands
 import requests
 import os
 import webserver
-from utils_embeds import crear_embed_info, crear_embed_exito, crear_embed_error
+from utils_embeds import crear_embed_info, crear_embed_exito, crear_embed_error, EmbedModal
 
+# ==== Configuración del Bot ====
 Discord_Token = os.getenv('Discord_Token')
 
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='.', intents=intents)
 
-class EmbedModal(discord.ui.Modal, title="Crear un Embed Personalizado"):
-    titulo = discord.ui.TextInput(
-        label="Título del embed",
-        placeholder="Escribe el título aquí...",
-        max_length=256
-    )
-    descripcion = discord.ui.TextInput(
-        label="Descripción",
-        style=discord.TextStyle.paragraph,
-        placeholder="Puedes usar saltos de línea libremente",
-        max_length=2000,
-        required=True
-    )
-
-    def __init__(self, interaction: discord.Interaction, color=discord.Color.blurple()):
-        super().__init__()
-        self.interaction = interaction
-        self.color = color
-
-    async def on_submit(self, interaction: discord.Interaction):
-        embed = discord.Embed(
-            title=self.titulo.value,
-            description=self.descripcion.value,
-            color=self.color
-        )
-        embed.set_footer(
-            text=f"Creado por {interaction.user.display_name}",
-            icon_url=interaction.user.avatar.url if interaction.user.avatar else discord.Embed.Empty
-        )
-
-        await interaction.response.send_message(embed=embed)
-
-        msg = await interaction.original_response()
-        await msg.add_reaction("👁️")
-        await msg.add_reaction("📥")
-
+# ==== Funciones Utilitarias ====
 def es_admin(interaction: discord.Interaction) -> bool:
     return interaction.user.guild_permissions.administrator
 
+# ==== Comando: /active ====
 @bot.tree.command(name="active", description="Muestra el enlace para activar tu insignia de desarrollador")
 async def slash_active(interaction: discord.Interaction):
     if not es_admin(interaction):
@@ -72,6 +40,7 @@ async def slash_active(interaction: discord.Interaction):
     )
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
+# ==== Comando: /ping ====
 @bot.tree.command(name="ping", description="Responde con Pong y muestra la latencia")
 async def slash_ping(interaction: discord.Interaction):
     latency_ms = round(bot.latency * 1000)
@@ -83,6 +52,7 @@ async def slash_ping(interaction: discord.Interaction):
     )
     await interaction.response.send_message(embed=embed)
 
+# ==== Comando: /poke ====
 @bot.tree.command(name="poke", description="Busca información sobre un Pokémon")
 async def slash_poke(interaction: discord.Interaction, nombre: str):
     try:
@@ -132,6 +102,7 @@ async def slash_poke(interaction: discord.Interaction, nombre: str):
         )
         await interaction.response.send_message(embed=embed_error)
 
+# ==== Comando: /clean ====
 @bot.tree.command(name="clean", description="Elimina mensajes del canal")
 async def slash_clean(interaction: discord.Interaction, cantidad: int = 100):
     if not interaction.user.guild_permissions.manage_messages:
@@ -163,6 +134,7 @@ async def slash_clean(interaction: discord.Interaction, cantidad: int = 100):
         )
         await interaction.followup.send(embed=embed_error)
 
+# ==== Comando: /embed ====
 @bot.tree.command(name="embed", description="Abre un formulario para crear un embed con estilo")
 async def slash_embed(interaction: discord.Interaction):
     if not interaction.user.guild_permissions.manage_messages:
@@ -177,11 +149,12 @@ async def slash_embed(interaction: discord.Interaction):
     modal = EmbedModal(interaction)
     await interaction.response.send_modal(modal)
 
+# ==== Evento: on_ready ====
 @bot.event
 async def on_ready():
     print(f'✅ Logged in as {bot.user}')
     await bot.tree.sync()
 
+# ==== Ejecución del Webserver y Bot ====
 webserver.keep_alive()
 bot.run(Discord_Token)
-
