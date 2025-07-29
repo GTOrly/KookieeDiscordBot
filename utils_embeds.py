@@ -69,6 +69,11 @@ class EmbedModal(discord.ui.Modal, title="Crear un Embed Personalizado"):
         self.interaction = interaction
 
     async def on_submit(self, interaction: discord.Interaction):
+        # Resolución de menciones primero
+        menciones_str = ""
+        if self.menciones.value:
+            menciones_str = await resolver_menciones(self.menciones.value, interaction.guild)
+
         # Color personalizado
         color_input = self.color_hex.value.lower().strip()
         colores_predefinidos = {
@@ -80,19 +85,23 @@ class EmbedModal(discord.ui.Modal, title="Crear un Embed Personalizado"):
         }
 
         color_embed = discord.Color.blurple()  # Por defecto
-
         if color_input in colores_predefinidos:
             color_embed = colores_predefinidos[color_input]
         elif color_input.startswith("#") and len(color_input) == 7:
             try:
                 color_embed = discord.Color.from_str(color_input)
             except:
-                pass  # Color inválido, usa por defecto
+                pass
+
+        # Descripción con menciones incluidas
+        descripcion_final = self.descripcion.value
+        if menciones_str:
+            descripcion_final += f"\n\n{menciones_str}"
 
         # Construcción del embed
         embed = discord.Embed(
             title=self.titulo.value,
-            description=self.descripcion.value,
+            description=descripcion_final,
             color=color_embed
         )
 
