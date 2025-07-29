@@ -3,7 +3,6 @@
 ![Python](https://img.shields.io/badge/Python-3.11%2B-blue)
 ![discord.py](https://img.shields.io/badge/discord.py-app_commands-green)
 ![Render](https://img.shields.io/badge/Deployment-Render.com-purple)
-![License](https://img.shields.io/badge/License-MIT-yellow)
 ![Status](https://img.shields.io/badge/Project-Active-brightgreen)
 
 **Kookiee Bot** es un bot de Discord desarrollado en **Python** utilizando `discord.py`. Su objetivo es ofrecer comandos visuales y funcionales con respuestas mediante embeds personalizados, moderación integrada (en desarrollo), y soporte para interfaces como formularios, botones y menús. Está pensado para comunidades que valoran organización, seguridad y una experiencia visual atractiva.
