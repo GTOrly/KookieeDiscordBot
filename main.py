@@ -52,9 +52,9 @@ async def slash_ping(interaction: discord.Interaction):
     )
     await interaction.response.send_message(embed=embed)
 
-# ==== Comando con prefijo: .poke ====
-@bot.command(name="poke")
-async def prefijo_poke(ctx: commands.Context, nombre: str):
+# ==== Comando: /poke ====
+@bot.tree.command(name="poke", description="Busca información sobre un Pokémon")
+async def slash_poke(interaction: discord.Interaction, nombre: str):
     try:
         url = f'https://pokeapi.co/api/v2/pokemon/{nombre.lower()}'
         result = requests.get(url)
@@ -63,9 +63,9 @@ async def prefijo_poke(ctx: commands.Context, nombre: str):
             embed_error = crear_embed_error(
                 titulo="🧐 Pokémon no encontrado",
                 descripcion=f"El Pokémon \"{nombre}\" no existe o está mal escrito.",
-                usuario=ctx.author
+                usuario=interaction.user
             )
-            await ctx.send(embed=embed_error)
+            await interaction.response.send_message(embed=embed_error, ephemeral=True)
             return
 
         data = result.json()
@@ -84,23 +84,23 @@ async def prefijo_poke(ctx: commands.Context, nombre: str):
         embed = crear_embed_info(
             titulo=f"{name} 🐾",
             descripcion=f"Altura: `{height} m` | Peso: `{weight} kg`\nTipo(s): {', '.join(types)}",
-            usuario=ctx.author,
+            usuario=interaction.user,
             color=discord.Color.random()
         )
         embed.set_thumbnail(url=sprite_url)
         embed.add_field(name="✨ Habilidades", value=', '.join(abilities), inline=False)
         embed.add_field(name="📊 Stats", value=f"Ataque: `{atk}`\nDefensa: `{defn}`\nVelocidad: `{speed}`", inline=False)
 
-        await ctx.send(embed=embed)
+        await interaction.response.send_message(embed=embed)
 
     except Exception as e:
-        print(f'Error en prefijo_poke: {e}')
+        print(f'Error en slash_poke: {e}')
         embed_error = crear_embed_error(
             titulo="❌ Error interno",
             descripcion="Ocurrió un problema al buscar el Pokémon.",
-            usuario=ctx.author
+            usuario=interaction.user
         )
-        await ctx.send(embed=embed_error)
+        await interaction.response.send_message(embed=embed_error)
 
 # ==== Comando: /clean ====
 @bot.tree.command(name="clean", description="Elimina mensajes del canal")
