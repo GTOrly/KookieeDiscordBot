@@ -18,7 +18,6 @@ Su entorno secundario de desarrollo es **OrlyLearn**, donde se experimentan nuev
 - `/clean cantidad` → Elimina mensajes del canal (requiere permisos de moderación).
 - `/active` → Envía enlace para activar la insignia de desarrollador (respuesta privada).
 - `/embed` → Crea un embed personalizado desde formulario interactivo.
-- `.poke nombre` → Versión con prefijo para entornos legacy o pruebas.
 
 ---
 
