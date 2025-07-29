@@ -1,41 +1,59 @@
-# OrlyLearn Bot
+# 🐾 Kookiee Bot
 
-OrlyLearn Bot es un bot de Discord creado en Python utilizando discord.py. Está diseñado para ofrecer comandos útiles, moderación básica, y respuestas visuales con embeds personalizados. Ideal para comunidades que valoran organización y funcionalidad.
+![Python](https://img.shields.io/badge/Python-3.11%2B-blue)
+![discord.py](https://img.shields.io/badge/discord.py-app_commands-green)
+![Render](https://img.shields.io/badge/Deployment-Render.com-purple)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+![Status](https://img.shields.io/badge/Project-Active-brightgreen)
 
-## Comandos Disponibles
+**Kookiee Bot** es un bot de Discord desarrollado en **Python** utilizando `discord.py`. Su objetivo es ofrecer comandos visuales y funcionales con respuestas mediante embeds personalizados, moderación integrada (en desarrollo), y soporte para interfaces como formularios, botones y menús. Está pensado para comunidades que valoran organización, seguridad y una experiencia visual atractiva.
 
-- /ping: Muestra la latencia actual del bot
-- /poke nombre: Busca información sobre un Pokémon
-- /clean cantidad: Elimina mensajes en el canal (solo moderadores)
-- /active: Envía el enlace para activar la insignia de desarrollador (solo visible para quien lo ejecuta)
+Su entorno secundario de desarrollo es **OrlyLearn**, donde se experimentan nuevas funciones antes de su implementación oficial en Kookiee.
 
-## Tecnologías Utilizadas
+---
 
-- Python 3.11+
-- discord.py con app_commands
-- Render.com para despliegue automático
-- utils_embeds.py para embeds personalizados
-- Webserver de keep alive para mantener activo el bot en hosting gratuito
+## 🧪 Comandos Disponibles
 
-## Estructura del Proyecto (sugerida)
+- `/ping` → Muestra la latencia actual del bot.
+- `/poke nombre` → Busca información sobre un Pokémon.
+- `/clean cantidad` → Elimina mensajes del canal (requiere permisos de moderación).
+- `/active` → Envía enlace para activar la insignia de desarrollador (respuesta privada).
+- `/embed` → Crea un embed personalizado desde formulario interactivo.
+- `.poke nombre` → Versión con prefijo para entornos legacy o pruebas.
 
-orlylearn-bot/
-├── main.py
-├── webserver.py
-├── utils_embeds.py
-├── requirements.txt
-├── README.md
+---
 
-## Moderación y Seguridad
+## 🔧 Tecnologías Utilizadas
 
-- Verificación de permisos para comandos administrativos
-- Mensajes de error claros y visuales
-- Interacciones privadas con respuestas ephemeral
+- **Python 3.11+**
+- **discord.py** con `app_commands` y componentes `discord.ui`
+- **Render.com** para despliegue automático y persistente
+- `utils_embeds.py` para manejo estandarizado de estilos visuales
+- **Sistema uptime (keep alive)**:  
+  El archivo `webserver.py` ejecuta una instancia web mínima para evitar que el bot se duerma en servicios gratuitos como Replit. Es útil como complemento cuando el despliegue no garantiza persistencia continua.
 
-## Próximas Mejoras
+---
 
-- Comando /help con menú interactivo
-- Comandos /kick, /ban, /userinfo
-- Integración de botones y select menus
-- Separación en cogs para modularidad
+## 🚀 Próximas Integraciones
 
+- Comando `/help` con menú interactivo por categorías.
+- Comandos administrativos: `/kick`, `/ban`, `/userinfo`.
+- Moderación y seguridad:
+  - Verificación de permisos (`Manage Messages`, `Administrator`)
+  - Embeds visuales para errores y advertencias
+  - Respuestas privadas con `ephemeral`
+- Select menus y botones para navegación y confirmaciones.
+- Refactorización en `cogs` modulares por categoría (`mod`, `info`, `fun`, `ui`).
+- Base de datos opcional para persistencia (usuarios, estadísticas, configuraciones).
+
+---
+
+## 🤝 Contribuciones
+
+Este proyecto está en evolución constante. Si deseas aportar, puedes hacerlo mediante:
+
+- Sugerencias en los issues del repositorio.
+- Forks y Pull Requests con mejoras o nuevos comandos.
+- Pruebas en entorno de desarrollo utilizando **OrlyLearn** como sandbox.
+
+> Tu participación ayuda a que Kookiee sea más completo, modular y útil para distintas comunidades. 🧩
