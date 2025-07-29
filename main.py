@@ -115,15 +115,20 @@ async def slash_clean(interaction: discord.Interaction, cantidad: int = 100):
         return
 
     try:
-        await interaction.response.defer(ephemeral=False)
-        await interaction.channel.purge(limit=cantidad)
+        await interaction.response.defer(ephemeral=True)
 
-        embed = crear_embed_exito(
+        # Guardamos el mensaje de interacción antes de purgar
+        confirm_embed = crear_embed_exito(
             titulo="🧼 Limpieza completada",
             descripcion=f"Se eliminaron `{cantidad}` mensajes.",
             usuario=interaction.user
         )
-        await interaction.followup.send(embed=embed, delete_after=5)
+
+        # Ejecutamos la purga
+        await interaction.channel.purge(limit=cantidad)
+
+        # Enviamos mensaje de confirmación sin riesgo de eliminación
+        await interaction.followup.send(embed=confirm_embed)
 
     except Exception as e:
         print(f'Error en slash_clean: {e}')
