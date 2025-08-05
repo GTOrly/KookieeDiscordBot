@@ -1,4 +1,4 @@
-# ==== Imports ====
+#. ==== Imports ====
 import discord
 from discord.ext import commands
 import requests
@@ -6,7 +6,7 @@ import os
 import webserver
 from utils_embeds import crear_embed_info, crear_embed_exito, crear_embed_error, EmbedModal
 
-# ==== Configuración del Bot ====
+#* ==== Configuración del Bot ====
 Discord_Token = os.getenv('Discord_Token')
 
 intents = discord.Intents.default()
@@ -17,7 +17,7 @@ bot = commands.Bot(command_prefix='.', intents=intents)
 def es_admin(interaction: discord.Interaction) -> bool:
     return interaction.user.guild_permissions.administrator
 
-# ==== Comando: /active ====
+#! ==== Comando: /active ====
 @bot.tree.command(name="active", description="Muestra el enlace para activar tu insignia de desarrollador")
 async def slash_active(interaction: discord.Interaction):
     if not es_admin(interaction):
@@ -40,7 +40,7 @@ async def slash_active(interaction: discord.Interaction):
     )
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
-# ==== Comando: /ping ====
+#! ==== Comando: /ping ====
 @bot.tree.command(name="ping", description="Responde con Pong y muestra la latencia")
 async def slash_ping(interaction: discord.Interaction):
     latency_ms = round(bot.latency * 1000)
@@ -52,7 +52,7 @@ async def slash_ping(interaction: discord.Interaction):
     )
     await interaction.response.send_message(embed=embed)
 
-# ==== Comando: /poke ====
+#! ==== Comando: /poke ====
 @bot.tree.command(name="poke", description="Busca información sobre un Pokémon")
 async def slash_poke(interaction: discord.Interaction, nombre: str):
     try:
@@ -102,7 +102,7 @@ async def slash_poke(interaction: discord.Interaction, nombre: str):
         )
         await interaction.response.send_message(embed=embed_error)
 
-# ==== Comando: /clean ====
+#! ==== Comando: /clean ====
 @bot.tree.command(name="clean", description="Elimina mensajes del canal")
 async def slash_clean(interaction: discord.Interaction, cantidad: int = 100):
     if not interaction.user.guild_permissions.manage_messages:
@@ -115,20 +115,15 @@ async def slash_clean(interaction: discord.Interaction, cantidad: int = 100):
         return
 
     try:
-        await interaction.response.defer(ephemeral=True)
+        await interaction.response.defer(ephemeral=False)
+        await interaction.channel.purge(limit=cantidad)
 
-        # Guardamos el mensaje de interacción antes de purgar
-        confirm_embed = crear_embed_exito(
+        embed = crear_embed_exito(
             titulo="🧼 Limpieza completada",
             descripcion=f"Se eliminaron `{cantidad}` mensajes.",
             usuario=interaction.user
         )
-
-        # Ejecutamos la purga
-        await interaction.channel.purge(limit=cantidad)
-
-        # Enviamos mensaje de confirmación sin riesgo de eliminación
-        await interaction.followup.send(embed=confirm_embed)
+        await interaction.followup.send(embed=embed, delete_after=5)
 
     except Exception as e:
         print(f'Error en slash_clean: {e}')
@@ -139,7 +134,7 @@ async def slash_clean(interaction: discord.Interaction, cantidad: int = 100):
         )
         await interaction.followup.send(embed=embed_error)
 
-# ==== Comando: /embed ====
+#! ==== Comando: /embed ====
 @bot.tree.command(name="embed", description="Abre un formulario para crear un embed con estilo")
 async def slash_embed(interaction: discord.Interaction):
     if not interaction.user.guild_permissions.manage_messages:
@@ -154,12 +149,26 @@ async def slash_embed(interaction: discord.Interaction):
     modal = EmbedModal(interaction)
     await interaction.response.send_modal(modal)
 
-# ==== Evento: on_ready ====
+#! ==== Comando: /Devs ====
+@bot.tree.command(name="devs", description="Muestra información sobre los desarrolladores del bot")
+async def slash_devs(interaction: discord.Interaction):
+    embed = crear_embed_info(
+        titulo="👨‍💻 Desarrolladores del Bot ",
+        descripcion=(   
+            "Este bot fue desarrollado por:\n"
+            f'- [GTOrly] - (https://github.com/GTOrly)\n'),
+        usuario=interaction.user,
+        color=discord.Color.red()
+    )
+    await interaction.response.send_message(embed=embed, ephemeral=True)
+    return
+
+#. ==== Evento: on_ready ====
 @bot.event
 async def on_ready():
     print(f'✅ Logged in as {bot.user}')
     await bot.tree.sync()
 
-# ==== Ejecución del Webserver y Bot ====
+#. ==== Ejecución del Webserver y Bot ====
 webserver.keep_alive()
 bot.run(Discord_Token)
