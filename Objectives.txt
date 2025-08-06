@@ -1,0 +1,78 @@
+# 🎯 Kookiee Bot — Objetivos del Proyecto
+
+Este documento detalla los objetivos técnicos, funcionales y estratégicos del desarrollo del bot Kookiee. Su propósito es servir como guía de referencia para el progreso del proyecto, incluyendo metas inmediatas, planes de expansión y visión académica.
+
+---
+
+## 🧩 Objetivos Técnicos
+
+- Compatibilidad dual para comandos (slash y prefijo).
+- Modularización de comandos mediante cogs organizados por categoría.
+- Implementación de botones, select menus y mejoras visuales en embeds.
+- Manejo elegante de errores y mensajes amigables.
+- Automatización del entorno virtual y flujo de instalación.
+- Logging para depuración y seguimiento.
+
+---
+
+## 🛡️ Sistema de Moderación
+
+- Comandos de moderación: `/ban`, `/kick`, `/mute`, `/warn`, etc.
+- Sistema de advertencias con persistencia y historial.
+- Logs de moderación en canales dedicados.
+- Filtro de palabras prohibidas y detección de spam.
+- Configuración de roles protegidos y permisos.
+
+---
+
+## 🎓 Presentación Académica
+
+- Preparación del proyecto como propuesta de grado:
+  - Documento técnico con justificación, objetivos, arquitectura y resultados.
+  - Presentación visual con demostración en vivo y casos de uso.
+  - Código documentado y estructurado para evaluación académica.
+- Enfoque educativo y funcional que refuerce el valor académico del bot.
+- Justificación basada en innovación tecnológica, aplicabilidad real y escalabilidad.
+
+---
+
+## 🌐 Página Web para Usuarios
+
+- Desarrollo de una web funcional con:
+  - Panel de control para configuración del bot.
+  - Gestión de comandos, permisos y roles.
+  - Visualización de logs y estadísticas.
+  - Documentación interactiva y guía de uso.
+- Diseño responsive y accesible para administradores de servidores.
+
+---
+
+## 🤖 Integración de IA y Servicio Premium
+
+- Sistema premium con funciones avanzadas accesibles mediante suscripción o roles especiales.
+- Integración de inteligencia artificial para:
+  - Generación de respuestas automáticas en canales específicos.
+  - Asistencia contextual dentro del servidor.
+  - Análisis de actividad del servidor para sugerencias de configuración.
+- Panel web para gestionar el acceso premium y configurar las funciones de IA.
+- Uso de APIs de IA (Microsoft Copilot, OpenAI, etc.) para procesamiento de lenguaje natural.
+
+---
+
+## 🌍 Comunidad y Difusión
+
+- Publicación del bot en plataformas como Top.gg.
+- Creación de servidor oficial para soporte y comunidad.
+- Traducción del bot a múltiples idiomas para mayor alcance.
+- Recogida de feedback para mejoras iterativas.
+
+---
+
+## 🔮 Objetivos de Expansión
+
+- Integración con base de datos para persistencia avanzada.
+- Sistema de niveles, experiencia y logros.
+- Panel de administración web vinculado a la página oficial.
+- Integración con APIs externas (PokéAPI, OpenWeather, etc.).
+
+---

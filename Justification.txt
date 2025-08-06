@@ -1,0 +1,68 @@
+# 📚 Justificación Académica — Kookiee Bot (Discord)
+
+Este documento presenta la justificación académica del desarrollo de **Kookiee**, un bot para Discord diseñado con enfoque modular, escalable y educativo. El proyecto se plantea como propuesta de grado, integrando conocimientos técnicos y estratégicos aplicables a entornos reales de gestión comunitaria.
+
+---
+
+## 🧠 Introducción
+
+Discord se ha consolidado como una plataforma clave para comunidades educativas, profesionales y de entretenimiento. Los bots dentro de Discord permiten automatizar tareas, moderar servidores, ofrecer información contextual y mejorar la experiencia de los usuarios.
+
+**Kookiee** nace como una solución avanzada para servidores de Discord, con funcionalidades que van desde comandos interactivos hasta moderación inteligente, todo construido con buenas prácticas de desarrollo en Python.
+
+---
+
+## 🎓 Contexto Académico
+
+Este proyecto se desarrolla como propuesta de grado con los siguientes objetivos académicos:
+
+- Aplicar programación avanzada en Python con enfoque en bots de Discord.
+- Diseñar una arquitectura modular usando cogs para escalabilidad.
+- Implementar comandos slash y prefijo con compatibilidad dual.
+- Automatizar entornos virtuales y flujos de instalación.
+- Documentar el proyecto de forma técnica y presentarlo profesionalmente.
+
+---
+
+## 🚀 Innovación y Diferenciación
+
+Kookiee se distingue por:
+
+- Su compatibilidad con comandos **slash** y **prefijo**, adaptándose a las nuevas directrices de Discord.
+- Uso de **embeds visuales**, **botones**, y **select menus** para mejorar la interacción.
+- Sistema de moderación completo con advertencias persistentes y logs.
+- Planificación de una **página web vinculada** al bot para configuración remota.
+- Integración futura de **inteligencia artificial** para respuestas automáticas y análisis de actividad.
+- Enfoque académico con documentación clara, código limpio y presentación formal.
+
+---
+
+## 🛠️ Aplicabilidad Real en Discord
+
+Kookiee está diseñado para funcionar en servidores reales de Discord, ofreciendo:
+
+- Comandos de moderación como `/ban`, `/mute`, `/warn`, con persistencia.
+- Filtro de lenguaje ofensivo y detección de spam.
+- Panel web (en desarrollo) para configurar roles, permisos y comandos.
+- Soporte multilenguaje para comunidades diversas.
+- Integración con APIs externas como PokéAPI o OpenWeather para comandos temáticos.
+
+---
+
+## 📈 Impacto Educativo
+
+El desarrollo de Kookiee permite:
+
+- Consolidar conocimientos de desarrollo de bots en Python.
+- Aprender sobre la API oficial de Discord y su ecosistema.
+- Documentar y presentar un proyecto técnico con aplicabilidad real.
+- Explorar conceptos de automatización, UX en bots, y modularidad.
+- Fomentar la creatividad y resolución de problemas en entornos digitales.
+
+---
+
+## 🧩 Conclusión
+
+Kookiee representa una propuesta académica sólida que combina innovación tecnológica, aplicabilidad directa en Discord y valor educativo. Su desarrollo demuestra competencias técnicas avanzadas y ofrece una herramienta útil para comunidades reales dentro de la plataforma.
+
+---
